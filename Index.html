@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>one last thing.</title>
+    <style>
+        :root {
+            --bg: #faf9f6;
+            --surface: #f5f5f0;
+            --text: #1a1a1a;
+            --muted: #6b6b6b;
+            --accent: #c9a8a8;
+            --border: rgba(0,0,0,0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 88%;
+            max-width: 380px;
+        }
+
+        .layer {
+            display: none;
+            animation: enter 0.6s ease;
+        }
+
+        .layer.active {
+            display: block;
+        }
+
+        @keyframes enter {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 32px;
+            letter-spacing: -0.3px;
+        }
+
+        .question {
+            font-size: 16px;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .depth {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 15px;
+            line-height: 1.7;
+            border-left: 2px solid var(--accent);
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg);
+            font-size: 17px;
+            color: var(--text);
+            outline: none;
+            margin-bottom: 12px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        input.shake {
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            background: var(--text);
+            color: var(--bg);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.1s;
+            font-family: inherit;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Message Layer - Completely Redesigned */
+        .message {
+            text-align: center;
+        }
+
+        .truth {
+            margin-bottom: 48px;
+        }
+
+        .truth p {
+            font-size: 17px;
+            line-height: 2;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .truth .real {
+            font-size: 20px;
+            color: var(--text);
+            font-weight: 400;
+            margin: 32px 0;
+            letter-spacing: -0.3px;
+        }
+
+        .truth .muted {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: var(--border);
+            margin: 32px auto;
+        }
+
+        /* New Choice Style */
+        .choice-container {
+            position: relative;
+            height: 120px;
+            margin-top: 40px;
+        }
+
+        .choice-text {
+            font-size: 13px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .option {
+            width: 100%;
+            max-width: 280px;
+            padding: 18px 32px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            background: transparent;
+            color: var(--text);
+            font-size: 15px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        .option:hover::before {
+            opacity: 0.1;
+        }
+
+        .option.primary {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .option.primary:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .option.primary:hover::before {
+            opacity: 0;
+        }
+
+        .option.secondary {
+            border-color: transparent;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .option.secondary:hover {
+            color: var(--text);
+        }
+
+        /* The loop button */
+        .option.escape {
+            position: absolute;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal {
+            margin-top: 48px;
+            padding: 32px;
+            background: var(--surface);
+            border-radius: 16px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal h3 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .reveal p {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 400px) {
+            .container { width: 85%; }
+            h1 { font-size: 20px; }
+            .truth p { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Layer 1 -->
+        <div class="layer active" id="l1">
+            <div class="step">Identity Verification</div>
+            <h1>When was I born?</h1>
+            
+            <div class="question">
+                Enter the date. Format: DD/MM
+            </div>
+
+            <input type="text" id="dateInput" placeholder="03/09" maxlength="5" autocomplete="off">
+            <button onclick="checkDate()">Continue</button>
+        </div>
+
+        <!-- Layer 1.5 -->
+        <div class="layer" id="l1b">
+            <div class="step">Partial Match</div>
+            <h1>Incomplete.</h1>
+            
+            <div class="depth">
+                <p>That's what the paperwork says.</p>
+                <p style="margin-top: 12px; color: var(--muted);">
+                    But my mother didn't check the calendar.<br>
+                    She waited for him.
+                </p>
+                <p style="margin-top: 12px;">
+                    When did I truly arrive?
+                </p>
+            </div>
+
+            <input type="text" id="deepInput" placeholder="DD/MM" maxlength="5" autocomplete="off">
+            <button onclick="checkDeep()">Verify</button>
+        </div>
+
+        <!-- Layer 3: The Truth -->
+        <div class="layer message" id="l3">
+            <div class="truth">
+                <p>You solved the puzzles.</p>
+                <p class="muted">But these were never the real test.</p>
+                
+                <div class="divider"></div>
+                
+                <p class="real">
+                    A website can't fix what I broke.<br>
+                    Only I can.<br>
+                    Only time can.
+                </p>
+                
+                <div class="divider"></div>
+                
+                <p class="muted">
+                    I made this to show you<br>
+                    that I thought about you,<br>
+                    that I care enough to try,<br>
+                    that I'm sorry enough to admit<br>
+                    I was wrong.
+                </p>
+            </div>
+
+            <div class="choice-container">
+                <div class="choice-text">Your move</div>
+                
+                <div class="options" id="optArea">
+                    <button class="option primary" onclick="accept()">Give me a chance</button>
+                    <button class="option secondary escape" id="escapeBtn" onclick="escape()">I need time</button>
+                </div>
+            </div>
+
+            <div class="reveal" id="reveal">
+                <h3>Thank you for being here.</h3>
+                <p>I'll spend every day earning what you just gave me.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SURFACE = '03/09';
+        const REAL = '15/09';
+        const REAL_ALT = '15/9';
+
+        window.onload = () => {
+            document.getElementById('dateInput').focus();
+        };
+
+        function checkDate() {
+            const val = document.getElementById('dateInput').value.trim();
+            const inp = document.getElementById('dateInput');
+            const normalized = val.replace(/-/g, '/').replace(/\./g, '/');
+
+            if (normalized === REAL || normalized === REAL_ALT) {
+                go('l1', 'l3');
+            } else if (normalized === SURFACE) {
+                go('l1', 'l1b');
+                document.getElementById('deepInput').focus();
+            } else {
+                inp.classList.add('shake');
+                setTimeout(() => inp.classList.remove('shake'), 400);
+                inp.value = '';
+            }
+        }
+
+        function checkDeep() {
+            const val = document.getElementById('deepInput').value.trim();
+            const inp = document.getElementById('deepInput');
+            const normalized = val.replace(/-/g, '/').replace(/\./g, '/');
+
+            if (normalized === REAL || normalized === REAL_ALT) {
+                go('l1b', 'l3');
+            } else {
+                inp.classList.add('shake');
+                setTimeout(() => inp.classList.remove('shake'), 400);
+                inp.value = '';
+            }
+        }
+
+        function go(from, to) {
+            document.getElementById(from).classList.remove('active');
+            setTimeout(() => document.getElementById(to).classList.add('active'), 50);
+        }
+
+        function accept() {
+            const yesBtn = document.querySelector('.option.primary');
+            const noBtn = document.getElementById('escapeBtn');
+            
+            yesBtn.style.transform = 'scale(1.02)';
+            yesBtn.style.background = 'var(--accent)';
+            yesBtn.style.borderColor = 'var(--accent)';
+            yesBtn.style.color = 'white';
+            yesBtn.textContent = 'I will';
+            
+            noBtn.style.opacity = '0';
+            noBtn.style.pointerEvents = 'none';
+            
+            document.getElementById('reveal').classList.add('show');
+        }
+
+        // Infinite escape
+        function escape() {
+            const btn = document.getElementById('escapeBtn');
+            const container = document.getElementById('optArea');
+            const rect = container.getBoundingClientRect();
+            
+            // Random position within bounds
+            const maxMove = 100;
+            const x = (Math.random() - 0.5) * maxMove * 2;
+            const y = (Math.random() - 0.5) * 60;
+            
+            const texts = [
+                'are you sure?',
+                'think about it',
+                'please',
+                'don\'t go',
+                'wait',
+                'one more chance',
+                'i\'ll be better',
+                'stay',
+                'listen to me',
+                'i need you'
+            ];
+            
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+            btn.textContent = texts[Math.floor(Math.random() * texts.length)];
+            
+            // Fade and shrink slowly
+            const currentOpacity = parseFloat(btn.style.opacity || 0.6);
+            btn.style.opacity = Math.max(0.3, currentOpacity - 0.05);
+            
+            const currentScale = parseFloat(btn.style.transform.match(/scale\(([\d.]+)\)/)?.[1] || 1);
+            const newScale = Math.max(0.8, currentScale - 0.02);
+            btn.style.transform += ` scale(${newScale})`;
+        }
+
+        // Enter key support
+        document.getElementById('dateInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkDate();
+        });
+
+        document.getElementById('deepInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkDeep();
+        });
+    </script>
+</body>
+</html>
